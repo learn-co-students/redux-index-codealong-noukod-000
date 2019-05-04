@@ -1,32 +1,47 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux'
-import Todo from './Todo'
- 
-class TodosContainer extends Component {
-    handleSubmit = event => {
-        event.preventDefault();
-        this.props.addTodo(this.state)
-        this.setState({
-          text: '',
-        })
-    }
-    
-  renderTodos = () => this.props.todos.map((todo, id) => <Todo key={id} text={todo} />)
- 
+
+class CreateTodo extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      text: ''
+    };
+  }
+
+  handleChange(event) {
+    this.setState({
+      text: event.target.value
+    });
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    this.props.store.dispatch({
+      type: 'ADD_TODO',
+      todo: this.state,
+    });
+    this.setState({
+      text: '',
+    });
+  }
+
   render() {
     return(
       <div>
-        {this.renderTodos()}
+        <form onSubmit={(event) => this.handleSubmit(event)}>
+          <p>
+            <label>add todo</label>
+            <input type="text" 
+                    onChange={(event) => this.handleChange(event)}
+                    value={this.state.text} />
+          </p>
+          <input type="submit" />
+        </form>
       </div>
     );
   }
 };
- 
-const mapStateToProps = state => {
-    return {
-      todos: state.todos
-    }
-}
-   
-export default connect(mapStateToProps)(TodosContainer);s
-// export default connect()(TodosContainer);
+
+export default CreateTodo;
